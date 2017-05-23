@@ -22,6 +22,7 @@ app.get('/todos', function (req, res) {
 // Get /todos/:id
 app.get('/todos/:id', function (req, res) {
     // parseInt converts id from string to number
+    // reg.params.id gives access to url
     var todoId = parseInt(req.params.id, 10);
     // using underscore.js
     var matchedTodo = _.findWhere(todos, {id: todoId});
@@ -74,6 +75,22 @@ app.post('/todos', function (req, res) {
     todos.push(body);
 
     res.json(body);
+});
+
+// DELETE /todos/:id
+app.delete('/todos/:id', function (req, res) {
+    var todoId = parseInt(req.params.id, 10);
+    var matchedTodo = _.findWhere(todos, {id: todoId});
+
+
+
+    if (!matchedTodo) {
+        res.status(404).json({"error": "No todo item found with that id"});
+    } else {
+        todos =_.without(todos, matchedTodo);
+        res.json(matchedTodo);
+    }
+
 });
 
 app.listen(PORT, function () {
