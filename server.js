@@ -133,7 +133,7 @@ app.post('/users', function (req, res) {
     var newUser = _.pick(req.body, 'email', 'password');
 
     db.user.create(newUser).then(function (user) {
-        res.json(user.toJSON());
+        res.json(user.toPublicJSON());
     }).catch(function (e) {
         res.status(404).json(e);
     },function () {
