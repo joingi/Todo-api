@@ -92,27 +92,53 @@ app.put('/todos/:id', function(req, res) {
 	var body = _.pick(req.body, 'description', 'completed');
 
 
-	if (body.hasOwnProperty('completed')) {
-		body.completed = body.completed;
-	}
+	// if (body.hasOwnProperty('completed')) {
+	// 	body.completed = body.completed;
+	// }
 
-	if (body.hasOwnProperty('description')) {
-		body.description = body.description;
-	}
+	// if (body.hasOwnProperty('description')) {
+	// 	body.description = body.description;
+	// }
 
-	db.todo.findById(todoId).then(function(todo) {
-		if (todo) {
-			todo.update(body).then(function(todo) {
-				res.json(todo.toJSON());
-			}, function(e) {
-				res.status(400).json(e);
-			});
-		} else {
-			res.status(404).send();
-		}
-	}, function() {
-		res.status(500).send();
-	});
+	// db.todo.findById(todoId).then(function(todo) {
+	// 	if (todo) {
+	// 		todo.update(body).then(function(todo) {
+	// 			res.json(todo.toJSON());
+	// 		}, function(e) {
+	// 			res.status(400).json(e);
+	// 		});
+	// 	} else {
+	// 		res.status(404).send();
+	// 	}
+	// }, function() {
+	// 	res.status(500).send();
+	// });
+
+
+			db.todo.update(body, {
+                where: {
+                    id: todoId
+                }
+            }).then(function(todo) {
+				res.status(202).json(todo);
+			}).catch(function (e) {
+                res.status(404).json(e);
+            },function () {
+                res.status(500).send();
+            });
+});
+
+// USERS
+app.post('/users', function (req, res) {
+    var newUser = _.pick(req.body, 'email', 'password');
+
+    db.user.create(newUser).then(function (user) {
+        res.json(user.toJSON());
+    }).catch(function (e) {
+        res.status(404).json(e);
+    },function () {
+        res.status(500).send();
+    });
 });
 
 // Sequelize conection
